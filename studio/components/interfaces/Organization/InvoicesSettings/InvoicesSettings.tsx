@@ -23,7 +23,7 @@ const InvoicesSettings = () => {
   const [count, setCount] = useState(0)
   const [invoices, setInvoices] = useState<Invoice[]>([])
 
-  const { stripe_customer_id } = ui.selectedOrganization ?? {}
+  const { stripe_customer_id, slug } = ui.selectedOrganization ?? {}
   const offset = (page - 1) * PAGE_LIMIT
 
   const canReadInvoices = checkPermissions(PermissionAction.READ, 'invoices')
@@ -35,7 +35,7 @@ const InvoicesSettings = () => {
     const page = 1
 
     const fetchInvoiceCount = async () => {
-      const res = await head(`${API_URL}/stripe/invoices?customer=${stripe_customer_id}`, [
+      const res = await head(`${API_URL}/stripe/invoices?customer=${stripe_customer_id}&slug=${slug}`, [
         'X-Total-Count',
       ])
       if (!cancel) {
@@ -62,7 +62,7 @@ const InvoicesSettings = () => {
 
     const offset = (page - 1) * PAGE_LIMIT
     const invoices = await get(
-      `${API_URL}/stripe/invoices?offset=${offset}&limit=${PAGE_LIMIT}&customer=${stripe_customer_id}`
+      `${API_URL}/stripe/invoices?offset=${offset}&limit=${PAGE_LIMIT}&customer=${stripe_customer_id}&slug=${slug}`
     )
 
     if (invoices.error) {
